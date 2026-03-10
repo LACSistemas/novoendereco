@@ -3,13 +3,14 @@ import json
 import os
 from io import BytesIO
 from typing import List, Dict
-from dotenv import load_dotenv
-
 import streamlit as st
 from pypdf import PdfReader
 
-# Carrega variáveis de ambiente do .env
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 st.set_page_config(
     page_title="Detector de Novo Endereço",
@@ -337,8 +338,12 @@ def render_claude(resultado: Dict):
 # CONFIGURAÇÃO
 # =========================================================
 
-api_key_from_env = os.getenv("api_key_anthropic", "")
-anthropic_key = api_key_from_env
+# Tenta carregar API key do Streamlit secrets ou .env
+try:
+    anthropic_key = st.secrets["api_key_anthropic"]
+except:
+    anthropic_key = os.getenv("api_key_anthropic", "")
+
 modelo_claude = "claude-haiku-4-5-20251001"
 
 
